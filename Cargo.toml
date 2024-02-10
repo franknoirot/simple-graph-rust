@@ -1,0 +1,11 @@
+[package]
+name = "simple-graph-rust"
+version = "0.1.0"
+edition = "2021"
+build = "generate_simple_graph_constants.rs"
+
+[dependencies]
+sqlite = "0.33.0"
+
+[build-dependencies]
+fetch_unroll = "0.3.0"
