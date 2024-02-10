@@ -1,5 +1,10 @@
 use fetch_unroll::Fetch;
-use std::path::PathBuf;
+use glob::glob;
+use std::{
+    fs::OpenOptions,
+    io::Write,
+    path::{Path, PathBuf},
+};
 
 const SIMPLE_GRAPH_REMOTE_URL_BASE: &str =
     "https://github.com/dpapathanasiou/simple-graph/archive/refs/tags/";
@@ -33,6 +38,44 @@ fn main() {
     Fetch::from(simple_graph_url)
         .unroll()
         .strip_components(1)
-        .to(temp_simple_graph_dir)
+        .to(&temp_simple_graph_dir)
         .unwrap();
+
+    // Clear any stale constants.rs file
+    let constants_file_path = Path::new("src").join("constants.rs");
+    if std::fs::metadata(&constants_file_path).is_ok() {
+        std::fs::remove_file(&constants_file_path).unwrap();
+    }
+    // Create constants.rs file
+    let mut constants_file = OpenOptions::new()
+        .append(true)
+        .create(true)
+        .open(&constants_file_path)
+        .unwrap();
+
+    // Write simple-graph SQL files as constants
+    for entry in glob(temp_simple_graph_dir.join("sql/*.sql").to_str().unwrap()).unwrap() {
+        match entry {
+            Ok(path) => {
+                let filename_screaming_snake_case = path
+                    .file_stem()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .to_uppercase()
+                    .replace("-", "_");
+                let file_contents = std::fs::read_to_string(&path).unwrap();
+                constants_file
+                    .write(
+                        format!(
+                            "pub const {}: &str = r###\"{}\"###;\n",
+                            filename_screaming_snake_case, file_contents
+                        )
+                        .as_bytes(),
+                    )
+                    .unwrap();
+            }
+            Err(e) => println!("{:?}", e),
+        }
+    }
 }
