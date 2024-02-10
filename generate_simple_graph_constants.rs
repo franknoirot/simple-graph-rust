@@ -8,7 +8,7 @@ use std::{
 
 const SIMPLE_GRAPH_REMOTE_URL_BASE: &str =
     "https://github.com/dpapathanasiou/simple-graph/archive/refs/tags/";
-const SIMPLE_GRAPH_DEFAULT_VERSION: &str = "2.1.0";
+const SIMPLE_GRAPH_DEFAULT_VERSION: &str = "2.1.1";
 const TEMP_DIR: &str = "temp";
 const TEMP_ARCHIVE_DIR: &str = "simple_graph";
 
@@ -67,7 +67,7 @@ fn main() {
                 let file_contents = std::fs::read_to_string(&path).unwrap();
 
                 // Write a docstring
-                constants_file.write(b"\n/// Generated SQL string from the [simple-graph library](https://github.com/dpapathanasiou/simple-graph/sql/)\n",).unwrap();
+                constants_file.write(b"\n/// Generated SQL string from the [simple-graph library](https://github.com/dpapathanasiou/simple-graph/tree/main/sql)\n",).unwrap();
 
                 // Then write the constant
                 constants_file
@@ -105,7 +105,7 @@ fn main() {
                 let file_contents = std::fs::read_to_string(&path).unwrap();
 
                 // Write a docstring
-                constants_file.write(b"\n/// Generated Jinja2 template strings that can create SQL function, from the [simple-graph library](https://github.com/dpapathanasiou/simple-graph/sql/)\n").unwrap();
+                constants_file.write(b"\n/// Generated Jinja2 template strings that can create SQL function, from the [simple-graph library](https://github.com/dpapathanasiou/simple-graph/tree/main/sql)\n").unwrap();
 
                 // Then write the constant
                 constants_file
