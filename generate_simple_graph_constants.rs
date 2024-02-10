@@ -65,11 +65,55 @@ fn main() {
                     .to_uppercase()
                     .replace("-", "_");
                 let file_contents = std::fs::read_to_string(&path).unwrap();
+
+                // Write a docstring
+                constants_file.write(b"\n/// Generated SQL string from the [simple-graph library](https://github.com/dpapathanasiou/simple-graph/sql/)\n",).unwrap();
+
+                // Then write the constant
                 constants_file
                     .write(
                         format!(
                             "pub const {}: &str = r###\"{}\"###;\n",
                             filename_screaming_snake_case, file_contents
+                        )
+                        .as_bytes(),
+                    )
+                    .unwrap();
+            }
+            Err(e) => println!("{:?}", e),
+        }
+    }
+
+    // Write simple-graph .template files to constants
+    for entry in glob(
+        temp_simple_graph_dir
+            .join("sql/*.template")
+            .to_str()
+            .unwrap(),
+    )
+    .unwrap()
+    {
+        match entry {
+            Ok(path) => {
+                let filename_screaming_snake_case = path
+                    .file_stem()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .to_uppercase()
+                    .replace("-", "_");
+                let file_contents = std::fs::read_to_string(&path).unwrap();
+
+                // Write a docstring
+                constants_file.write(b"\n/// Generated Jinja2 template strings that can create SQL function, from the [simple-graph library](https://github.com/dpapathanasiou/simple-graph/sql/)\n").unwrap();
+
+                // Then write the constant
+                constants_file
+                    .write(
+                        format!(
+                            "pub const {}: &str = r###\"{}\"###;\n",
+                            filename_screaming_snake_case + "_TEMPLATE",
+                            file_contents
                         )
                         .as_bytes(),
                     )

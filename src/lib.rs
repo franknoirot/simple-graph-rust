@@ -6,6 +6,9 @@ mod tests {
 
     #[test]
     fn imported_constants() {
-        assert_eq!(constants::DELETE_EDGE, "DELETE FROM edges WHERE source = ? AND target = ?");
+        assert_eq!(
+            constants::DELETE_EDGE,
+            "DELETE FROM edges WHERE source = ? AND target = ?"
+        );
     }
 }
