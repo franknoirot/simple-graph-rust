@@ -71,3 +71,17 @@ pub const TRAVERSE_TEMPLATE: &str = r###"WITH RECURSIVE traverse(x{% if with_bod
   SELECT target{% if with_bodies %}, '->', properties {% endif %} FROM edges JOIN traverse ON source = x{% endif %}
 ) SELECT x{% if with_bodies %}, y, obj {% endif %} FROM traverse;
 "###;
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn imported_constants() {
+        assert_eq!(
+            DELETE_EDGE,
+            "DELETE FROM edges WHERE source = ? AND target = ?"
+        );
+    }
+}

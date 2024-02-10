@@ -122,4 +122,23 @@ fn main() {
             Err(e) => println!("{:?}", e),
         }
     }
+
+    // Colocate a test *within* our generated file 😎
+    constants_file
+        .write(
+            b"\n\n\
+            #[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn imported_constants() {
+        assert_eq!(
+            DELETE_EDGE,
+            \"DELETE FROM edges WHERE source = ? AND target = ?\"
+        );
+    }
+}",
+        )
+        .unwrap();
 }
